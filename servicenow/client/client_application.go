@@ -7,7 +7,7 @@ import (
 
 const endpointApplication = "sys_app.do"
 
-// Application is the json response for a application in ServiceNow.
+// Application is the json response for an application in ServiceNow.
 type Application struct {
 	BaseResult
 	Name    string `json:"name"`
@@ -18,6 +18,16 @@ type Application struct {
 // ApplicationResults is the object returned by ServiceNow API when saving or retrieving records.
 type ApplicationResults struct {
 	Records []Application `json:"records"`
+}
+
+// GetApplication retrieves a specific Application in ServiceNow with it's sys_id.
+func (client *ServiceNowClient) GetApplication(id string) (*Application, error) {
+	applicationPageResults := ApplicationResults{}
+	if err := client.getObject(endpointApplication, id, &applicationPageResults); err != nil {
+		return nil, err
+	}
+
+	return &applicationPageResults.Records[0], nil
 }
 
 // GetApplicationByName retrieves a specific Application in ServiceNow with it's name attribute.
@@ -37,6 +47,27 @@ func (client *ServiceNowClient) GetApplicationByName(name string) (*Application,
 	}
 
 	return &applicationPageResults.Records[0], nil
+}
+
+// CreateApplication creates a new Application in ServiceNow and returns the newly created application. The new application should
+// include the GUID (sys_id) created in ServiceNow.
+func (client *ServiceNowClient) CreateApplication(application *Application) (*Application, error) {
+	applicationPageResults := ApplicationResults{}
+	if err := client.createObject(endpointApplication, application, &applicationPageResults); err != nil {
+		return nil, err
+	}
+
+	return &applicationPageResults.Records[0], nil
+}
+
+// UpdateApplication updates a Application in ServiceNow.
+func (client *ServiceNowClient) UpdateApplication(application *Application) error {
+	return client.updateObject(endpointApplication, application.Id, application)
+}
+
+// DeleteApplication deletes a Application in ServiceNow with the corresponding sys_id.
+func (client *ServiceNowClient) DeleteApplication(id string) error {
+	return client.deleteObject(endpointApplication, id)
 }
 
 func (results ApplicationResults) validate() error {
