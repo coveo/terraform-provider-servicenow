@@ -17,6 +17,10 @@ func ResourceApplication() *schema.Resource {
 		Update: updateResourceApplication,
 		Delete: deleteResourceApplication,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			applicationName: {
 				Type:        schema.TypeString,
@@ -30,7 +34,7 @@ func ResourceApplication() *schema.Resource {
 				Description: "The unique scope of the application. Normally in the format x_[companyCode]_[shortAppId]. Cannot be changed once the application is created.",
 			},
 			applicationVersion: {
-				Type:     schema.TypeBool,
+				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "1.0.0",
 			},
