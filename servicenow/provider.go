@@ -42,7 +42,8 @@ func Provider() *schema.Provider {
 			"servicenow_widget_dependency_relation": resources.ResourceWidgetDependencyRelation(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"servicenow_role": resources.DataSourceRole(),
+			"servicenow_application": resources.DataSourceApplication(),
+			"servicenow_role":        resources.DataSourceRole(),
 		},
 		ConfigureFunc: configure,
 	}
