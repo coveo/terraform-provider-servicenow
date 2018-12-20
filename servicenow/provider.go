@@ -33,6 +33,7 @@ func Provider() *schema.Provider {
 			"servicenow_application_module":         resources.ResourceApplicationModule(),
 			"servicenow_css_include":                resources.ResourceJsInclude(),
 			"servicenow_css_include_relation":       resources.ResourceJsIncludeRelation(),
+			"servicenow_db_table":                   resources.ResourceDBTable(),
 			"servicenow_js_include":                 resources.ResourceJsInclude(),
 			"servicenow_js_include_relation":        resources.ResourceJsIncludeRelation(),
 			"servicenow_role":                       resources.ResourceRole(),
