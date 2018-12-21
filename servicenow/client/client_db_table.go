@@ -12,7 +12,7 @@ type DBTable struct {
 	Label                string `json:"label"`
 	UserRole             string `json:"user_role"`
 	Access               string `json:"access"`
-	ReadAccess           string `json:"read_access,string"`
+	ReadAccess           bool   `json:"read_access,string"`
 	CreateAccess         bool   `json:"create_access,string"`
 	AlterAccess          bool   `json:"alter_access,string"`
 	DeleteAccess         bool   `json:"delete_access,string"`
@@ -23,6 +23,7 @@ type DBTable struct {
 	CreateAccessControls bool   `json:"create_access_controls,string"`
 	CreateModule         bool   `json:"create_module,string"`
 	CreateMobileModule   bool   `json:"create_mobile_module,string"`
+	Name                 string `json:"name"`
 }
 
 // DBTableResults is the object returned by ServiceNow API when saving or retrieving records.

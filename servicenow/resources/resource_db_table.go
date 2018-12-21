@@ -18,6 +18,7 @@ const dbTableWebServiceAccess = "web_service_access"
 const dbTableConfigurationAccess = "configuration_access"
 const dbTableExtendable = "extendable"
 const dbTableLiveFeed = "live_feed"
+const dbTableName = "name"
 
 // ResourceDBTable manages a DBTable in ServiceNow.
 func ResourceDBTable() *schema.Resource {
@@ -103,6 +104,11 @@ func ResourceDBTable() *schema.Resource {
 				Default:     false,
 				Description: "Flag to determine if live feed should be enabled for this table.",
 			},
+			dbTableName: {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The internal name of the table.",
+			},
 		},
 	}
 }
@@ -160,6 +166,7 @@ func resourceFromDBTable(data *schema.ResourceData, dbTable *client.DBTable) {
 	data.Set(dbTableConfigurationAccess, dbTable.ConfigurationAccess)
 	data.Set(dbTableExtendable, dbTable.Extendable)
 	data.Set(dbTableLiveFeed, dbTable.LiveFeed)
+	data.Set(dbTableName, dbTable.Name)
 }
 
 func resourceToDBTable(data *schema.ResourceData) *client.DBTable {
