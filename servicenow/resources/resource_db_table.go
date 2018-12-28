@@ -1,8 +1,6 @@
 package resources
 
 import (
-	"fmt"
-
 	"github.com/coveo/terraform-provider-servicenow/servicenow/client"
 	"github.com/hashicorp/terraform/helper/schema"
 )
