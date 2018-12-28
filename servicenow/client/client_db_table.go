@@ -1,7 +1,6 @@
 package client
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -24,7 +23,7 @@ type DBTable struct {
 	CreateAccessControls bool   `json:"create_access_controls,string"`
 	CreateModule         bool   `json:"create_module,string"`
 	CreateMobileModule   bool   `json:"create_mobile_module,string"`
-	Name                 string `json:"name"`
+	Name                 string `json:"name,omitempty"`
 }
 
 // DBTableResults is the object returned by ServiceNow API when saving or retrieving records.
@@ -44,17 +43,8 @@ func (client *ServiceNowClient) GetDBTable(id string) (*DBTable, error) {
 
 // GetDBTableByName retrieves a specific DB Table in ServiceNow with it's name attribute.
 func (client *ServiceNowClient) GetDBTableByName(name string) (*DBTable, error) {
-	jsonResponse, err := client.requestJSON("GET", endpointDBTable+"?JSONv2&sysparm_query=name="+name, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	dbTablePageResults := DBTableResults{}
-	if err := json.Unmarshal(jsonResponse, &dbTablePageResults); err != nil {
-		return nil, err
-	}
-
-	if err := dbTablePageResults.validate(); err != nil {
+	if err := client.getObjectByName(endpointDBTable, name, &dbTablePageResults); err != nil {
 		return nil, err
 	}
 
