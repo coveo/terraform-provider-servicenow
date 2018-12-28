@@ -49,10 +49,7 @@ func ResourceDBTable() *schema.Resource {
 				Default:     "public",
 				Description: "Whether this Script can be accessed from only this application scope or all application scopes. Values can be 'package_private' or 'public'.",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					v := val.(string)
-					if v != "package_private" && v != "public" {
-						errs = append(errs, fmt.Errorf("%q must be 'package_private' or 'public', got: %s", key, v))
-					}
+					warns, errs = validateStringValue(val.(string), key, []string{"package_private", "public"})
 					return
 				},
 			},
