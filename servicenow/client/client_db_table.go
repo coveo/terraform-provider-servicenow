@@ -1,6 +1,7 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -35,6 +36,25 @@ type DBTableResults struct {
 func (client *ServiceNowClient) GetDBTable(id string) (*DBTable, error) {
 	dbTablePageResults := DBTableResults{}
 	if err := client.getObject(endpointDBTable, id, &dbTablePageResults); err != nil {
+		return nil, err
+	}
+
+	return &dbTablePageResults.Records[0], nil
+}
+
+// GetDBTableByName retrieves a specific DB Table in ServiceNow with it's name attribute.
+func (client *ServiceNowClient) GetDBTableByName(name string) (*DBTable, error) {
+	jsonResponse, err := client.requestJSON("GET", endpointDBTable+"?JSONv2&sysparm_query=name="+name, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	dbTablePageResults := DBTableResults{}
+	if err := json.Unmarshal(jsonResponse, &dbTablePageResults); err != nil {
+		return nil, err
+	}
+
+	if err := dbTablePageResults.validate(); err != nil {
 		return nil, err
 	}
 

@@ -46,6 +46,7 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"servicenow_application": resources.DataSourceApplication(),
+			"servicenow_db_table":    resources.DataSourceDBTable(),
 			"servicenow_role":        resources.DataSourceRole(),
 		},
 		ConfigureFunc: configure,
