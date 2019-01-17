@@ -182,11 +182,11 @@ func parseResponseToRecord(jsonResponse []byte, responseObjectOut Record) error 
 		return err
 	}
 
-	return validate(responseObjectOut)
+	return checkStatus(responseObjectOut)
 }
 
 // validate checks if the specified Record is in error or not.
-func validate(record Record) error {
+func checkStatus(record Record) error {
 	if record.GetStatus() != "success" {
 		return fmt.Errorf("error from ServiceNow -> %s: %s", record.GetError().Message, record.GetError().Reason)
 	}
