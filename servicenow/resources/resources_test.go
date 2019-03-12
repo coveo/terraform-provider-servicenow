@@ -93,6 +93,15 @@ var resourcesToTest = []*schema.Resource{
 	resources.ResourceWidgetDependencyRelation(),
 }
 
+var dataSourcesToTest = []*schema.Resource{
+	resources.DataSourceApplication(),
+	resources.DataSourceApplicationCategory(),
+	resources.DataSourceDBTable(),
+	resources.DataSourceRole(),
+	resources.DataSourceSystemProperty(),
+	resources.DataSourceSystemPropertyCategory(),
+}
+
 func TestResourcesCanRead(t *testing.T) {
 	for _, res := range resourcesToTest {
 		data := schema.ResourceData{}
@@ -119,6 +128,22 @@ func TestResourceRestMessageHandleReadError(t *testing.T) {
 		res.Read(&data, clientMock)
 		clientMock.AssertExpectations(t)
 		assert.Equal(t, "", data.Id())
+	}
+}
+
+func TestDataSourcesCanRead(t *testing.T) {
+	for _, res := range dataSourcesToTest {
+		data := schema.TestResourceDataRaw(t, res.Schema, map[string]interface{}{
+			"name": "oi",
+		})
+
+		clientMock := new(ClientMock)
+		clientMock.
+			On("GetObjectByName", mock.AnythingOfType("string"), "oi", mock.Anything).
+			Return(nil)
+
+		res.Read(data, clientMock)
+		clientMock.AssertExpectations(t)
 	}
 }
 
