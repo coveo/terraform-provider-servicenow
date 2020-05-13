@@ -44,6 +44,7 @@ func Provider() *schema.Provider {
 			"servicenow_rest_message_header":        resources.ResourceRestMessageHeader(),
 			"servicenow_rest_method":                resources.ResourceRestMethod(),
 			"servicenow_rest_method_header":         resources.ResourceRestMethodHeader(),
+			"servicenow_scripted_rest_api":          resources.ResourceScriptedRestApi(),
 			"servicenow_script_include":             resources.ResourceScriptInclude(),
 			"servicenow_system_property":            resources.ResourceSystemProperty(),
 			"servicenow_system_property_category":   resources.ResourceSystemPropertyCategory(),
