@@ -12,9 +12,15 @@ const scriptedRestApiEnforce_acl = "enforce_acl"
 const scriptedRestApiName = "name"
 const scriptedRestApiProduces = "produces"
 const scriptedRestApiProduces_customized = "produces_customized"
+const scriptedRestApiServiceId = "service_id"
+const scriptedRestApiBaseURI = "base_uri"
+const scriptedRestApiNamespace = "namespace"
+const scriptedRestApiDocLink = "doc_link"
+const scriptedRestApiShortDescription = "short_description"
 
 // ResourceScriptedRestApi manages a System Property in ServiceNow.
 func ResourceScriptedRestApi() *schema.Resource {
+
 	return &schema.Resource{
 		Create: createResourceScriptedRestApi,
 		Read:   readResourceScriptedRestApi,
@@ -26,9 +32,15 @@ func ResourceScriptedRestApi() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			scriptedRestApiName: {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The name of the API. Appears in API documentation.",
+			},
 			scriptedRestApiActive: {
 				Type:        schema.TypeBool,
 				Optional:    true,
+				Default:     true,
 				Description: "Activates the API. Inactive APIs cannot serve requests.",
 			},
 			scriptedRestApiConsumes: {
@@ -39,19 +51,13 @@ func ResourceScriptedRestApi() *schema.Resource {
 			scriptedRestApiConsumes_customized: {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "Override default supported request formats.",
+				Description: "Indicates the default supported request formats is customized.",
 			},
 			scriptedRestApiEnforce_acl: {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The ACLs to enfore when accessing resources. Individual resources may override this value.",
+				Description: "The ACLs to enforce when accessing resources. Individual resources may override this value.",
 			},
-			scriptedRestApiName: {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The name of the API. Appears in API documentation.",
-			},
-
 			scriptedRestApiProduces: {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -60,7 +66,32 @@ func ResourceScriptedRestApi() *schema.Resource {
 			scriptedRestApiProduces_customized: {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Description: "Override default supported response formats.",
+				Description: "Indicates the default supported request formats is customized.",
+			},
+			scriptedRestApiServiceId: {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The API identifier used to distinguish this API in URI paths. Must be unique within API namespace.",
+			},
+			scriptedRestApiBaseURI: {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The base API path (URI) to access this API.",
+			},
+			scriptedRestApiNamespace: {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The namespace the API belongs to. The value depends on the current application scope.",
+			},
+			scriptedRestApiDocLink: {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Specifies a URL that links to static documentation about the API.",
+			},
+			scriptedRestApiShortDescription: {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The description of the API. Appears in API documentation.",
 			},
 			commonProtectionPolicy: getProtectionPolicySchema(),
 			commonScope:            getScopeSchema(),
@@ -109,7 +140,6 @@ func deleteResourceScriptedRestApi(data *schema.ResourceData, serviceNowClient i
 
 func resourceFromScriptedRestApi(data *schema.ResourceData, scriptedRestApi *client.ScriptedRestApi) {
 	data.SetId(scriptedRestApi.ID)
-
 	data.Set(scriptedRestApiActive, scriptedRestApi.Active)
 	data.Set(scriptedRestApiConsumes, scriptedRestApi.Consumes)
 	data.Set(scriptedRestApiConsumes_customized, scriptedRestApi.ConsumesCustomized)
@@ -117,6 +147,11 @@ func resourceFromScriptedRestApi(data *schema.ResourceData, scriptedRestApi *cli
 	data.Set(scriptedRestApiName, scriptedRestApi.Name)
 	data.Set(scriptedRestApiProduces, scriptedRestApi.Produces)
 	data.Set(scriptedRestApiProduces_customized, scriptedRestApi.ProducesCustomized)
+	data.Set(scriptedRestApiServiceId, scriptedRestApi.ServiceId)
+	data.Set(scriptedRestApiBaseURI, scriptedRestApi.BaseURI)
+	data.Set(scriptedRestApiNamespace, scriptedRestApi.Namespace)
+	data.Set(scriptedRestApiDocLink, scriptedRestApi.DocLink)
+	data.Set(scriptedRestApiShortDescription, scriptedRestApi.ShortDescription)
 	data.Set(commonProtectionPolicy, scriptedRestApi.ProtectionPolicy)
 	data.Set(commonScope, scriptedRestApi.Scope)
 }
@@ -124,13 +159,33 @@ func resourceFromScriptedRestApi(data *schema.ResourceData, scriptedRestApi *cli
 func resourceToScriptedRestApi(data *schema.ResourceData) *client.ScriptedRestApi {
 	scriptedRestApi := client.ScriptedRestApi{
 		Active:             data.Get(scriptedRestApiActive).(bool),
-		Consumes:           data.Get(scriptedRestApiConsumes).(string),
-		ConsumesCustomized: data.Get(scriptedRestApiConsumes_customized).(bool),
 		EnforceACL:         data.Get(scriptedRestApiEnforce_acl).(string),
 		Name:               data.Get(scriptedRestApiName).(string),
 		Produces:           data.Get(scriptedRestApiProduces).(string),
 		ProducesCustomized: data.Get(scriptedRestApiProduces_customized).(bool),
+		ServiceId:          data.Get(scriptedRestApiServiceId).(string),
+		BaseURI:            data.Get(scriptedRestApiBaseURI).(string),
+		Namespace:          data.Get(scriptedRestApiNamespace).(string),
+		DocLink:            data.Get(scriptedRestApiDocLink).(string),
+		ShortDescription:   data.Get(scriptedRestApiShortDescription).(string),
 	}
+
+	consumes, consumesOk := data.GetOk(scriptedRestApiConsumes)
+	if consumesOk {
+		scriptedRestApi.ConsumesCustomized = true
+	} else {
+		scriptedRestApi.ConsumesCustomized = false
+	}
+	scriptedRestApi.Consumes = consumes.(string)
+
+	produces, producesOk := data.GetOk(scriptedRestApiProduces)
+	if producesOk {
+		scriptedRestApi.ProducesCustomized = true
+	} else {
+		scriptedRestApi.ProducesCustomized = false
+	}
+	scriptedRestApi.Produces = produces.(string)
+
 	scriptedRestApi.ID = data.Id()
 	scriptedRestApi.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	scriptedRestApi.Scope = data.Get(commonScope).(string)
