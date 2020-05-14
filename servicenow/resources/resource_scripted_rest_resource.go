@@ -42,6 +42,25 @@ func ResourceScriptedRestResource() *schema.Resource {
 				Required:    true,
 				Description: "The name of the API resource. Appears in API documentation.",
 			},
+			scriptedRestResourceHTTPMethod: {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The HTTP method that maps to this record. Can be 'get', 'post', 'put', 'patch' or 'delete'.",
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					warns, errs = validateStringValue(val.(string), key, []string{"get", "post", "put", "patch", "delete"})
+					return
+				},
+			},
+			scriptedRestResourceOperationScript: {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The script that implements the resource.",
+			},
+			scriptedRestResourceWebServiceDefinition: {
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The parent API this resource belongs to.",
+			},
 			scriptedRestResourceActive: {
 				Type:        schema.TypeBool,
 				Optional:    true,
@@ -95,25 +114,6 @@ func ResourceScriptedRestResource() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The description of the API. Appears in API documentation.",
-			},
-			scriptedRestResourceHTTPMethod: {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The HTTP method that maps to this record. Can be 'get', 'post', 'put', 'patch' or 'delete'.",
-				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					warns, errs = validateStringValue(val.(string), key, []string{"get", "post", "put", "patch", "delete"})
-					return
-				},
-			},
-			scriptedRestResourceOperationScript: {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The script that implements the resource.",
-			},
-			scriptedRestResourceWebServiceDefinition: {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The parent API this resource belongs to.",
 			},
 			scriptedRestResourceRelativePath: {
 				Type:        schema.TypeString,
