@@ -171,20 +171,22 @@ func resourceToScriptedRestApi(data *schema.ResourceData) *client.ScriptedRestAp
 	}
 
 	consumes, consumesOk := data.GetOk(scriptedRestApiConsumes)
+	scriptedRestApi.Consumes = consumes.(string)
+	//ConsumesCustomized is inferred from Consumes. If Consumes is empty, ConsumesCustomized is false.
 	if consumesOk {
 		scriptedRestApi.ConsumesCustomized = true
 	} else {
 		scriptedRestApi.ConsumesCustomized = false
 	}
-	scriptedRestApi.Consumes = consumes.(string)
 
 	produces, producesOk := data.GetOk(scriptedRestApiProduces)
+	scriptedRestApi.Produces = produces.(string)
+	//ProducesCustomized is inferred from Produces. If Produces is empty, ProducesCustomized is false.
 	if producesOk {
 		scriptedRestApi.ProducesCustomized = true
 	} else {
 		scriptedRestApi.ProducesCustomized = false
 	}
-	scriptedRestApi.Produces = produces.(string)
 
 	scriptedRestApi.ID = data.Id()
 	scriptedRestApi.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
