@@ -83,6 +83,7 @@ var resourcesToTest = []*schema.Resource{
 	resources.ResourceRestMethod(),
 	resources.ResourceRestMethodHeader(),
 	resources.ResourceScriptedRestApi(),
+	resources.ResourceScriptedRestResource(),
 	resources.ResourceScriptInclude(),
 	resources.ResourceSystemProperty(),
 	resources.ResourceSystemPropertyCategory(),
