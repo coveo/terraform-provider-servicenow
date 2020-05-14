@@ -18,7 +18,7 @@ const scriptedRestApiNamespace = "namespace"
 const scriptedRestApiDocLink = "doc_link"
 const scriptedRestApiShortDescription = "short_description"
 
-// ResourceScriptedRestApi manages a System Property in ServiceNow.
+// ResourceScriptedRestApi manages a Scripted Rest API in ServiceNow.
 func ResourceScriptedRestApi() *schema.Resource {
 
 	return &schema.Resource{

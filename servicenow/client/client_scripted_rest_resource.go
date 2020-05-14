@@ -1,9 +1,9 @@
 package client
 
-// EndpointScriptedRestResource is the endpoint to manage Scripted Rest Api records.
+// EndpointScriptedRestResource is the endpoint to manage Scripted Rest Resources records.
 const EndpointScriptedRestResource = "sys_ws_operation.do"
 
-// EndpointScriptedRestResource is the json response for a Scripted Rest Api in ServiceNow.
+// EndpointScriptedRestResource is the json response for a Scripted Rest Resources in ServiceNow.
 type ScriptedRestResource struct {
 	BaseResult
 	Name                     string `json:"name"`
