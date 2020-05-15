@@ -93,22 +93,14 @@ func ResourceScriptedRestResource() *schema.Resource {
 			scriptedRestResourceConsumes: {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "application/json",
 				Description: "Default supported request formats.",
-			},
-			scriptedRestResourceConsumesCustomized: {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Indicates the default supported request formats is customized.",
 			},
 			scriptedRestResourceProduces: {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "application/json",
 				Description: "Default supported response formats.",
-			},
-			scriptedRestResourceProducesCustomized: {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Indicates the default supported request formats is customized.",
 			},
 			scriptedRestResourceShortDescription: {
 				Type:        schema.TypeString,
@@ -128,6 +120,7 @@ func ResourceScriptedRestResource() *schema.Resource {
 			scriptedRestResourceOperationURI: {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "The resolved path of this resource including base API path, version, and relative path.",
 			},
 			scriptedRestResourceWebServiceVersion: {
@@ -221,25 +214,12 @@ func resourceToScriptedRestResource(data *schema.ResourceData) *client.ScriptedR
 		OperationURI:             data.Get(scriptedRestResourceOperationURI).(string),
 		WebServiceDefinition:     data.Get(scriptedRestResourceWebServiceDefinition).(string),
 		WebServiceVersion:        data.Get(scriptedRestResourceWebServiceVersion).(string),
+		Produces:                 data.Get(scriptedRestResourceProduces).(string),
+		Consumes:                 data.Get(scriptedRestResourceConsumes).(string),
 	}
 
-	consumes, consumesOk := data.GetOk(scriptedRestResourceConsumes)
-	scriptedRestResource.Consumes = consumes.(string)
-	//ConsumesCustomized is inferred from Consumes. If Consumes is empty, ConsumesCustomized is false.
-	if consumesOk {
-		scriptedRestResource.ConsumesCustomized = true
-	} else {
-		scriptedRestResource.ConsumesCustomized = false
-	}
-
-	produces, producesOk := data.GetOk(scriptedRestResourceProduces)
-	scriptedRestResource.Produces = produces.(string)
-	//ProducesCustomized is inferred from Produces. If Produces is empty, ProducesCustomized is false.
-	if producesOk {
-		scriptedRestResource.ProducesCustomized = true
-	} else {
-		scriptedRestResource.ProducesCustomized = false
-	}
+	scriptedRestResource.ProducesCustomized = true
+	scriptedRestResource.ConsumesCustomized = true
 
 	scriptedRestResource.ID = data.Id()
 	scriptedRestResource.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)

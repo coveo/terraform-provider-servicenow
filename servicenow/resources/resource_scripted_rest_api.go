@@ -46,12 +46,8 @@ func ResourceScriptedRestApi() *schema.Resource {
 			scriptedRestApiConsumes: {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "application/json",
 				Description: "Default supported request formats.",
-			},
-			scriptedRestApiConsumes_customized: {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Indicates the default supported request formats is customized.",
 			},
 			scriptedRestApiEnforce_acl: {
 				Type:        schema.TypeString,
@@ -61,26 +57,25 @@ func ResourceScriptedRestApi() *schema.Resource {
 			scriptedRestApiProduces: {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "application/json",
 				Description: "Default supported response formats.",
-			},
-			scriptedRestApiProduces_customized: {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Indicates the default supported request formats is customized.",
 			},
 			scriptedRestApiServiceId: {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "The API identifier used to distinguish this API in URI paths. Must be unique within API namespace.",
 			},
 			scriptedRestApiBaseURI: {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "The base API path (URI) to access this API.",
 			},
 			scriptedRestApiNamespace: {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "The namespace the API belongs to. The value depends on the current application scope.",
 			},
 			scriptedRestApiDocLink: {
@@ -158,36 +153,20 @@ func resourceFromScriptedRestApi(data *schema.ResourceData, scriptedRestApi *cli
 
 func resourceToScriptedRestApi(data *schema.ResourceData) *client.ScriptedRestApi {
 	scriptedRestApi := client.ScriptedRestApi{
-		Active:             data.Get(scriptedRestApiActive).(bool),
-		EnforceACL:         data.Get(scriptedRestApiEnforce_acl).(string),
-		Name:               data.Get(scriptedRestApiName).(string),
-		Produces:           data.Get(scriptedRestApiProduces).(string),
-		ProducesCustomized: data.Get(scriptedRestApiProduces_customized).(bool),
-		ServiceId:          data.Get(scriptedRestApiServiceId).(string),
-		BaseURI:            data.Get(scriptedRestApiBaseURI).(string),
-		Namespace:          data.Get(scriptedRestApiNamespace).(string),
-		DocLink:            data.Get(scriptedRestApiDocLink).(string),
-		ShortDescription:   data.Get(scriptedRestApiShortDescription).(string),
+		Active:           data.Get(scriptedRestApiActive).(bool),
+		EnforceACL:       data.Get(scriptedRestApiEnforce_acl).(string),
+		Name:             data.Get(scriptedRestApiName).(string),
+		ServiceId:        data.Get(scriptedRestApiServiceId).(string),
+		BaseURI:          data.Get(scriptedRestApiBaseURI).(string),
+		Namespace:        data.Get(scriptedRestApiNamespace).(string),
+		DocLink:          data.Get(scriptedRestApiDocLink).(string),
+		ShortDescription: data.Get(scriptedRestApiShortDescription).(string),
+		Produces:         data.Get(scriptedRestApiProduces).(string),
+		Consumes:         data.Get(scriptedRestApiConsumes).(string),
 	}
 
-	consumes, consumesOk := data.GetOk(scriptedRestApiConsumes)
-	scriptedRestApi.Consumes = consumes.(string)
-	//ConsumesCustomized is inferred from Consumes. If Consumes is empty, ConsumesCustomized is false.
-	if consumesOk {
-		scriptedRestApi.ConsumesCustomized = true
-	} else {
-		scriptedRestApi.ConsumesCustomized = false
-	}
-
-	produces, producesOk := data.GetOk(scriptedRestApiProduces)
-	scriptedRestApi.Produces = produces.(string)
-	//ProducesCustomized is inferred from Produces. If Produces is empty, ProducesCustomized is false.
-	if producesOk {
-		scriptedRestApi.ProducesCustomized = true
-	} else {
-		scriptedRestApi.ProducesCustomized = false
-	}
-
+	scriptedRestApi.ProducesCustomized = true
+	scriptedRestApi.ConsumesCustomized = true
 	scriptedRestApi.ID = data.Id()
 	scriptedRestApi.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	scriptedRestApi.Scope = data.Get(commonScope).(string)
