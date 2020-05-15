@@ -99,6 +99,6 @@ func resourceFromACL(data *schema.ResourceData, acl *client.ACL) {
 	data.Set(aclAdvanced, acl.Advanced)
 	data.Set(aclCondition, acl.Condition)
 	data.Set(aclScript, acl.Script)
+	data.Set(commonProtectionPolicy, acl.ProtectionPolicy)
 	data.Set(commonScope, acl.Scope)
-
 }
