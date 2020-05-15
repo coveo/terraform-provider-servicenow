@@ -7,11 +7,9 @@ import (
 
 const scriptedRestApiActive = "active"
 const scriptedRestApiConsumes = "consumes"
-const scriptedRestApiConsumes_customized = "consumes_customized"
 const scriptedRestApiEnforce_acl = "enforce_acl"
 const scriptedRestApiName = "name"
 const scriptedRestApiProduces = "produces"
-const scriptedRestApiProduces_customized = "produces_customized"
 const scriptedRestApiServiceId = "service_id"
 const scriptedRestApiBaseURI = "base_uri"
 const scriptedRestApiNamespace = "namespace"
@@ -63,18 +61,15 @@ func ResourceScriptedRestApi() *schema.Resource {
 			scriptedRestApiServiceId: {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Computed:    true,
 				Description: "The API identifier used to distinguish this API in URI paths. Must be unique within API namespace.",
 			},
 			scriptedRestApiBaseURI: {
 				Type:        schema.TypeString,
-				Optional:    true,
 				Computed:    true,
 				Description: "The base API path (URI) to access this API.",
 			},
 			scriptedRestApiNamespace: {
 				Type:        schema.TypeString,
-				Optional:    true,
 				Computed:    true,
 				Description: "The namespace the API belongs to. The value depends on the current application scope.",
 			},
@@ -137,11 +132,9 @@ func resourceFromScriptedRestApi(data *schema.ResourceData, scriptedRestApi *cli
 	data.SetId(scriptedRestApi.ID)
 	data.Set(scriptedRestApiActive, scriptedRestApi.Active)
 	data.Set(scriptedRestApiConsumes, scriptedRestApi.Consumes)
-	data.Set(scriptedRestApiConsumes_customized, scriptedRestApi.ConsumesCustomized)
 	data.Set(scriptedRestApiEnforce_acl, scriptedRestApi.EnforceACL)
 	data.Set(scriptedRestApiName, scriptedRestApi.Name)
 	data.Set(scriptedRestApiProduces, scriptedRestApi.Produces)
-	data.Set(scriptedRestApiProduces_customized, scriptedRestApi.ProducesCustomized)
 	data.Set(scriptedRestApiServiceId, scriptedRestApi.ServiceId)
 	data.Set(scriptedRestApiBaseURI, scriptedRestApi.BaseURI)
 	data.Set(scriptedRestApiNamespace, scriptedRestApi.Namespace)
@@ -153,20 +146,17 @@ func resourceFromScriptedRestApi(data *schema.ResourceData, scriptedRestApi *cli
 
 func resourceToScriptedRestApi(data *schema.ResourceData) *client.ScriptedRestApi {
 	scriptedRestApi := client.ScriptedRestApi{
-		Active:           data.Get(scriptedRestApiActive).(bool),
-		EnforceACL:       data.Get(scriptedRestApiEnforce_acl).(string),
-		Name:             data.Get(scriptedRestApiName).(string),
-		ServiceId:        data.Get(scriptedRestApiServiceId).(string),
-		BaseURI:          data.Get(scriptedRestApiBaseURI).(string),
-		Namespace:        data.Get(scriptedRestApiNamespace).(string),
-		DocLink:          data.Get(scriptedRestApiDocLink).(string),
-		ShortDescription: data.Get(scriptedRestApiShortDescription).(string),
-		Produces:         data.Get(scriptedRestApiProduces).(string),
-		Consumes:         data.Get(scriptedRestApiConsumes).(string),
+		Active:             data.Get(scriptedRestApiActive).(bool),
+		EnforceACL:         data.Get(scriptedRestApiEnforce_acl).(string),
+		Name:               data.Get(scriptedRestApiName).(string),
+		ServiceId:          data.Get(scriptedRestApiServiceId).(string),
+		DocLink:            data.Get(scriptedRestApiDocLink).(string),
+		ShortDescription:   data.Get(scriptedRestApiShortDescription).(string),
+		Produces:           data.Get(scriptedRestApiProduces).(string),
+		Consumes:           data.Get(scriptedRestApiConsumes).(string),
+		ProducesCustomized: true,
+		ConsumesCustomized: true,
 	}
-
-	scriptedRestApi.ProducesCustomized = true
-	scriptedRestApi.ConsumesCustomized = true
 	scriptedRestApi.ID = data.Id()
 	scriptedRestApi.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
 	scriptedRestApi.Scope = data.Get(commonScope).(string)

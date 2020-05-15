@@ -12,14 +12,12 @@ const scriptedRestResourceRequiresACLAuthorization = "requires_acl_authorization
 const scriptedRestResourceRequiresAuthentication = "requires_authentication"
 const scriptedRestResourceRequiresSNCInternalRole = "requires_snc_internal_role"
 const scriptedRestResourceProduces = "produces"
-const scriptedRestResourceProducesCustomized = "produces_customized"
 const scriptedRestResourceShortDescription = "short_description"
 const scriptedRestResourceOperationScript = "operation_script"
 const scriptedRestResourceRelativePath = "relative_path"
 const scriptedRestResourceRequestExample = "request_example"
 const scriptedRestResourceHTTPMethod = "http_method"
 const scriptedRestResourceConsumes = "consumes"
-const scriptedRestResourceConsumesCustomized = "consumes_customized"
 const scriptedRestResourceOperationURI = "operation_uri"
 const scriptedRestResourceWebServiceDefinition = "web_service_definition"
 const scriptedRestResourceWebServiceVersion = "web_service_version"
@@ -119,7 +117,6 @@ func ResourceScriptedRestResource() *schema.Resource {
 			},
 			scriptedRestResourceOperationURI: {
 				Type:        schema.TypeString,
-				Optional:    true,
 				Computed:    true,
 				Description: "The resolved path of this resource including base API path, version, and relative path.",
 			},
@@ -182,15 +179,12 @@ func resourceFromScriptedRestResource(data *schema.ResourceData, scriptedRestRes
 	data.Set(scriptedRestResourceRequiresAuthentication, scriptedRestResource.RequiresAuthentication)
 	data.Set(scriptedRestResourceRequiresSNCInternalRole, scriptedRestResource.RequiresSNCInternalRole)
 	data.Set(scriptedRestResourceProduces, scriptedRestResource.Produces)
-	data.Set(scriptedRestResourceProducesCustomized, scriptedRestResource.ProducesCustomized)
 	data.Set(scriptedRestResourceShortDescription, scriptedRestResource.ShortDescription)
 	data.Set(scriptedRestResourceOperationScript, scriptedRestResource.OperationScript)
 	data.Set(scriptedRestResourceRelativePath, scriptedRestResource.RelativePath)
 	data.Set(scriptedRestResourceRequestExample, scriptedRestResource.RequestExample)
 	data.Set(scriptedRestResourceHTTPMethod, scriptedRestResource.HTTPMethod)
 	data.Set(scriptedRestResourceConsumes, scriptedRestResource.Consumes)
-	data.Set(scriptedRestResourceConsumesCustomized, scriptedRestResource.ConsumesCustomized)
-	data.Set(scriptedRestResourceOperationURI, scriptedRestResource.OperationURI)
 	data.Set(scriptedRestResourceWebServiceDefinition, scriptedRestResource.WebServiceDefinition)
 	data.Set(scriptedRestResourceWebServiceVersion, scriptedRestResource.WebServiceVersion)
 	data.Set(commonProtectionPolicy, scriptedRestResource.ProtectionPolicy)
@@ -211,15 +205,13 @@ func resourceToScriptedRestResource(data *schema.ResourceData) *client.ScriptedR
 		RelativePath:             data.Get(scriptedRestResourceRelativePath).(string),
 		RequestExample:           data.Get(scriptedRestResourceRequestExample).(string),
 		HTTPMethod:               data.Get(scriptedRestResourceHTTPMethod).(string),
-		OperationURI:             data.Get(scriptedRestResourceOperationURI).(string),
 		WebServiceDefinition:     data.Get(scriptedRestResourceWebServiceDefinition).(string),
 		WebServiceVersion:        data.Get(scriptedRestResourceWebServiceVersion).(string),
 		Produces:                 data.Get(scriptedRestResourceProduces).(string),
 		Consumes:                 data.Get(scriptedRestResourceConsumes).(string),
+		ProducesCustomized:       true,
+		ConsumesCustomized:       true,
 	}
-
-	scriptedRestResource.ProducesCustomized = true
-	scriptedRestResource.ConsumesCustomized = true
 
 	scriptedRestResource.ID = data.Id()
 	scriptedRestResource.ProtectionPolicy = data.Get(commonProtectionPolicy).(string)
