@@ -97,6 +97,7 @@ var resourcesToTest = []*schema.Resource{
 }
 
 var dataSourcesToTest = []*schema.Resource{
+	resources.DataSourceACL(),
 	resources.DataSourceApplication(),
 	resources.DataSourceApplicationCategory(),
 	resources.DataSourceDBTable(),
